@@ -1,11 +1,12 @@
 package user;
 
-public class User {
+public class user {
 
 	private String id;
 	private String pw;
 	private String name;
 	private String email;
+	
 	public String getId() {
 		return id;
 	}
@@ -30,7 +31,5 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
 
-	
 }
