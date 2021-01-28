@@ -1,12 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>jsp-web 게시판</title>
 </head>
 <body>
 	hello jsp-web
+	<!-- 접속자들을 모두 로그인 파일로 이동시키기 -->
+	<script>
+		location.href = 'login.jsp';
+	</script>
 </body>
 </html>
