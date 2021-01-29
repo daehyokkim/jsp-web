@@ -39,8 +39,8 @@
 					<!-- span.caret은 일종에 아이콘 같은것 -->
 					<ul class="dropdown-menu">
 						<!-- active: 현제 선택이 되었다 -->
-						<li class="active"><a href="login.jsp">로그인</a></li>
-						<li><a href="join.jsp">회원가입</a></li>
+						<li><a href="login.jsp">로그인</a></li>
+						<li class="active"><a href="join.jsp">회원가입</a></li>
 					</ul>
 				</li>	
 			</ul> 

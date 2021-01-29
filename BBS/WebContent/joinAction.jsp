@@ -18,6 +18,19 @@
 </head>
 <body>
 	<%
+		String userID = null;
+		if(session.getAttribute("userID")!=null){
+			userID = (String)session.getAttribute("userID");
+		
+		}
+		if(userID != null){
+			PrintWriter script = response.getWriter();
+			script.println("<script>"); //유동적으로 실행
+			script.print("alert('이미 로그인이 되었습니다.')");
+			script.println("location.href= 'main.jsp'"); //main.jsp요청
+			script.println("</script>");
+		
+		}
 		userDAO userDAO = new userDAO();
 		int result = userDAO.join(user);
 		if(user.getId()==null || user.getPw()==null||user.getEmail()==null||user.getName()==null||user.getSex()==null)

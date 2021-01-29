@@ -10,7 +10,7 @@
 	hello jsp-web
 	<!-- 접속자들을 모두 로그인 파일로 이동시키기 -->
 	<script>
-		location.href = 'login.jsp';
+		location.href = 'main.jsp';
 	</script>
 </body>
 </html>
