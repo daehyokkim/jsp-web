@@ -1,5 +1,6 @@
 package bbs;
 
+//bbsVO ¼³Á¤
 public class bbs {
 
 	private int bbsNum;
@@ -16,6 +17,7 @@ public class bbs {
 		this.bbsNum = bbsNum;
 	}
 	public String getBbsUserID() {
+		
 		return bbsUserID;
 	}
 	public void setBbsUserID(String bbsUserID) {
