@@ -2,9 +2,6 @@
     pageEncoding="UTF-8"%>
 <!-- 스크립트를 사용할 수 있게 설정 -->
 <%@ page import="java.io.PrintWriter" %>
-<%@ page import="bbs.bbs" %>
-<%@ page import="bbs.bbsDAO" %>
-<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,11 +17,6 @@
 		String userID = null;
 		if(session.getAttribute("userID") != null ){
 			userID = (String)session.getAttribute("userID");
-		}
-		
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber")!=null){
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 		}
 	 %>
 	<!-- 네비게이션 -->
@@ -91,50 +83,29 @@
 	<!-- 게시판 화면 설정 table구조-->
 	<div class="container">
 		<div class="row">
-		<!-- table-striped: 홀칸,짝칸 별로 색 차이주기 -->
-			<table class="table table-striped"
+			<form method="post" action="writeAction.jsp">
+				<!-- table-striped: 홀칸,짝칸 별로 색 차이주기 -->
+				<table class="table table-striped"
 				   style="text-align: center; border: 1px solid #dddddd">
 					<thead>
 						<tr>
-							<th style="background-color: #eeeeee; text-align: center;">번호</th>
-							<th style="background-color: #eeeeee; text-align: center;">제목</th>
-							<th style="background-color: #eeeeee; text-align: center;">작성일</th>
-							<th style="background-color: #eeeeee; text-align: center;">작성자</th>
+							<th colspan="2" style="background-color: #eeeeee; text-align: center;">게시판 글쓰기 양식</th>
 						</tr>
 					</thead>
 					<tbody>
-						<%
-							bbsDAO bbsDAO = new bbsDAO();
-							ArrayList<bbs> list = bbsDAO.getList(pageNumber);
-							for(int i=0;i<list.size();i++){
-						%>
 						<tr>
-							<td><%= list.get(i).getBbsNum()%></td>
-							<td><a href ="view.jsp?bbsNum=<%=list.get(i).getBbsNum()%>"><%= list.get(i).getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")%></a></td>
-							<td><%= list.get(i).getBbsDate().substring(0,11) +list.get(i).getBbsDate().substring(11,13)+"시"+list.get(i).getBbsDate().substring(14,16)+"분" %></td>
-							<td><%= list.get(i).getBbsUserID()%></td>
-						</tr>						
-						<%
-							}
-						%>
-
+							<td><input type="text" class="form-control" placeholder="글 제목"
+									   name ="bbsTitle" maxLength="50"></td>
+						</tr>
+						<tr>
+							<td><textarea class="form-control" placeholder="글 내용" 
+										 name ="bbsContent" maxLength="200" style="height:350px;"></textarea></td>
+						</tr>
 					</tbody>
-			</table>
-			<%
-				if(pageNumber != 1){
-			%>
-				<a href = "bbs.jsp?pageNumber=<%=pageNumber - 1 %>" class ="btn btn-success btn-arraw-left">이전</a>
-			<%
-				}
-			if(bbsDAO.nextPage(pageNumber+1)){
-			%>
-			<!-- 다음 페이지 -->
-				<a href = "bbs.jsp?pageNumber=<%=pageNumber + 1 %>" class ="btn btn-success btn-arraw-left">다음</a>
-			<%
-				}
-			%>
-
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
+				</table>
+				<input type="submit" class="btn btn-primary pull-right" value="글쓰기">
+			
+			</form>
 		</div>
 	</div>
 	<!-- 애니메이션 담당 -->

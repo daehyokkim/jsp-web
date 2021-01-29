@@ -16,62 +16,62 @@
 <body>
 	<%
 		//이미 로그인이 된상태면 로그인을 못하게 설정
-		String userID = null;
-		if(session.getAttribute("userID")!=null){
-			userID = (String)session.getAttribute("userID");
-		
-		}
-		if(userID != null){
-			PrintWriter script = response.getWriter();
-			script.println("<script>"); //유동적으로 실행
-			script.print("alert('이미 로그인이 되었습니다.')");
-			script.println("location.href= 'main.jsp'"); //main.jsp요청
-			script.println("</script>");
+			String userID = null;
+			if(session.getAttribute("userID")!=null){
+				userID = (String)session.getAttribute("userID");
+			}
+			if(userID != null){
+				PrintWriter script = response.getWriter();
+				script.println("<script>"); //유동적으로 실행
+				script.print("alert('이미 로그인이 되었습니다.')");
+				script.println("location.href= 'main.jsp'"); //main.jsp요청
+				script.println("</script>");
+			}
 			
-		}
-		userDAO userDAO = new userDAO();
-		int result = userDAO.login(user.getId(), user.getPw());
-		if(result == 1)
-		{
-			session.setAttribute("userID", user.getId());//세션에 id저장
-			PrintWriter script = response.getWriter();
-			script.println("<script>"); //유동적으로 실행
-			script.println("location.href= 'main.jsp'"); //main.jsp요청
-			script.println("</script>");
-		}
-		else if(result == 0)
-		{
-			PrintWriter script = response.getWriter();
-			script.println("<script>"); //유동적으로 실행
-			script.println("alert('비밀번호가 틀립니다.')"); //비밀번호 오류
-			script.println("history.back()"); //로그인 페이지로 돌려보내기
-			script.println("</script>");
-		}
-	
-		else if(result == -1)
-		{
-					PrintWriter script = response.getWriter();
-			script.println("<script>"); //유동적으로 실행
-			script.println("alert('존재하지 않는 아이디입니다.')"); //아이디 오류
-			script.println("history.back()"); //로그인 페이지로 돌려보내기
-			script.println("</script>");
-		}
-		else if(result == -2)
-		{
-			PrintWriter script = response.getWriter();
-			script.println("<script>"); //유동적으로 실행
-			script.println("alert('데이터베이스 오류가 발생했습니다.')"); //데이터베이스 오류
-			script.println("history.back()"); //로그인 페이지로 돌려보내기
-			script.println("</script>");
-		}
-		else
-		{
-			PrintWriter script = response.getWriter();
-			script.println("<script>"); //유동적으로 실행
-			script.println("alert('error.')"); //데이터베이스 오류
-			script.println("history.back()"); //로그인 페이지로 돌려보내기
-			script.println("</script>");
-		}
+			userDAO userDAO = new userDAO();
+			int result = userDAO.login(user.getId(), user.getPw());
+			
+			if(result == 1)
+			{
+				session.setAttribute("userID", user.getId());//세션에 id저장
+				PrintWriter script = response.getWriter();
+				script.println("<script>"); //유동적으로 실행
+				script.println("location.href= 'main.jsp'"); //main.jsp요청
+				script.println("</script>");
+			}
+			else if(result == 0)
+			{
+				PrintWriter script = response.getWriter();
+				script.println("<script>"); //유동적으로 실행
+				script.println("alert('비밀번호가 틀립니다.')"); //비밀번호 오류
+				script.println("history.back()"); //로그인 페이지로 돌려보내기
+				script.println("</script>");
+			}
+		
+			else if(result == -1)
+			{
+				PrintWriter script = response.getWriter();
+				script.println("<script>"); //유동적으로 실행
+				script.println("alert('존재하지 않는 아이디입니다.')"); //아이디 오류
+				script.println("history.back()"); //로그인 페이지로 돌려보내기
+				script.println("</script>");
+			}
+			else if(result == -2)
+			{
+				PrintWriter script = response.getWriter();
+				script.println("<script>"); //유동적으로 실행
+				script.println("alert('데이터베이스 오류가 발생했습니다.')"); //데이터베이스 오류
+				script.println("history.back()"); //로그인 페이지로 돌려보내기
+				script.println("</script>");
+			}
+			else
+			{
+				PrintWriter script = response.getWriter();
+				script.println("<script>"); //유동적으로 실행
+				script.println("alert('error.')"); //데이터베이스 오류
+				script.println("history.back()"); //로그인 페이지로 돌려보내기
+				script.println("</script>");
+			}
 	%>
 </body>
 </html>

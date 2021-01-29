@@ -4,7 +4,6 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="bbs.bbs" %>
 <%@ page import="bbs.bbsDAO" %>
-<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,10 +21,36 @@
 			userID = (String)session.getAttribute("userID");
 		}
 		
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber")!=null){
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		if(userID == null){
+
+			PrintWriter script = response.getWriter();
+			script.println("<script>"); //유동적으로 실행
+			script.println("alert('로그인을 하시오.')");
+			script.println("location.href='login.jsp'"); //main.jsp요청
+			script.println("</script>");
 		}
+		//spring MVC패턴으로 치면  ,@RequestParam("bbsNum")int bbsNum 이랑 같은 것 URL에 추가적인 데이터 전송
+		int bbsNum = 0;
+		if(request.getParameter("bbsNum") != null){
+			bbsNum = Integer.parseInt(request.getParameter("bbsNum"));
+		}
+		if(bbsNum == 0){
+			PrintWriter script = response.getWriter();
+			script.println("<script>"); //유동적으로 실행
+			script.println("alert('유효하지 않은 글입니다.')");
+			script.println("location.href='bbs.jsp'"); //main.jsp요청
+			script.println("</script>");
+		}
+		//반드시 존재 시 가능 , 받아온 글 담기
+		bbs bbs = new bbsDAO().getbbs(bbsNum);
+		if(!userID.equals(bbs.getBbsUserID())){
+			PrintWriter script = response.getWriter();
+			script.println("<script>"); //유동적으로 실행
+			script.println("alert('권한이 없습니다..')");
+			script.println("location.href='bbs.jsp'"); //main.jsp요청
+			script.println("</script>");
+			
+		} 
 	 %>
 	<!-- 네비게이션 -->
 	<!-- 하나의 웹의 전반적 구성 식별 -->
@@ -49,27 +74,7 @@
 				<li ><a href="main.jsp">메인</a></li>
 				<li class="active"><a href="bbs.jsp">게시판</a></li>
 			</ul>
-			<!-- 로그인이 되어 있지 않다면 설정  -->
-			<%
-				if(userID == null){
-			%>
-			<ul class="nav navbar-nav navbar-right">
-				<li class = "dropdown">
-					<a href="#" class="dropdown-toggle"
-						data-toggle="dropdown" role="button" aria-haspopup="true"
-						aria-expanded="false">접속하기<span class="caret"></span></a>
-					<!-- span.caret은 일종에 아이콘 같은것 -->
-					<ul class="dropdown-menu">
-						<li><a href="login.jsp">로그인</a></li>
-						<li><a href="join.jsp">회원가입</a></li>
-					</ul>
-				</li>	
-			</ul> 
-			<%
-				}
-				else{
-			%>
-			
+
 			<ul class="nav navbar-nav navbar-right">
 				<li class = "dropdown">
 					<a href="#" class="dropdown-toggle"
@@ -80,61 +85,34 @@
 						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul>
 				</li>	
-			</ul> 
-			<%
-				}			
-			%>
-			
+			</ul> 			
 		</div>
 	</nav>
 	
 	<!-- 게시판 화면 설정 table구조-->
 	<div class="container">
 		<div class="row">
-		<!-- table-striped: 홀칸,짝칸 별로 색 차이주기 -->
-			<table class="table table-striped"
+			<form method="post" action="updateAction.jsp?bbsNum=<%=bbs.getBbsNum()%>">
+				<!-- table-striped: 홀칸,짝칸 별로 색 차이주기 -->
+				<table class="table table-striped"
 				   style="text-align: center; border: 1px solid #dddddd">
 					<thead>
 						<tr>
-							<th style="background-color: #eeeeee; text-align: center;">번호</th>
-							<th style="background-color: #eeeeee; text-align: center;">제목</th>
-							<th style="background-color: #eeeeee; text-align: center;">작성일</th>
-							<th style="background-color: #eeeeee; text-align: center;">작성자</th>
+							<th colspan="2" style="background-color: #eeeeee; text-align: center;">게시판 글수정</th>
 						</tr>
 					</thead>
 					<tbody>
-						<%
-							bbsDAO bbsDAO = new bbsDAO();
-							ArrayList<bbs> list = bbsDAO.getList(pageNumber);
-							for(int i=0;i<list.size();i++){
-						%>
 						<tr>
-							<td><%= list.get(i).getBbsNum()%></td>
-							<td><a href ="view.jsp?bbsNum=<%=list.get(i).getBbsNum()%>"><%= list.get(i).getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")%></a></td>
-							<td><%= list.get(i).getBbsDate().substring(0,11) +list.get(i).getBbsDate().substring(11,13)+"시"+list.get(i).getBbsDate().substring(14,16)+"분" %></td>
-							<td><%= list.get(i).getBbsUserID()%></td>
-						</tr>						
-						<%
-							}
-						%>
-
+							<td><input type="text" class="form-control" placeholder="글 제목" name ="bbsTitle" maxLength="50" value ="<%=bbs.getBbsTitle()%>"></td>
+						</tr>
+						<tr>
+							<td><textarea class="form-control" placeholder="글 내용" name ="bbsContent" maxLength="200" style="height:350px;"><%=bbs.getBbsContent()%></textarea></td>
+						</tr>
 					</tbody>
-			</table>
-			<%
-				if(pageNumber != 1){
-			%>
-				<a href = "bbs.jsp?pageNumber=<%=pageNumber - 1 %>" class ="btn btn-success btn-arraw-left">이전</a>
-			<%
-				}
-			if(bbsDAO.nextPage(pageNumber+1)){
-			%>
-			<!-- 다음 페이지 -->
-				<a href = "bbs.jsp?pageNumber=<%=pageNumber + 1 %>" class ="btn btn-success btn-arraw-left">다음</a>
-			<%
-				}
-			%>
-
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
+				</table>
+				<input type="submit" class="btn btn-primary pull-right" value="글수정">
+			
+			</form>
 		</div>
 	</div>
 	<!-- 애니메이션 담당 -->

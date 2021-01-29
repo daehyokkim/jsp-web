@@ -4,7 +4,6 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="bbs.bbs" %>
 <%@ page import="bbs.bbsDAO" %>
-<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,11 +20,20 @@
 		if(session.getAttribute("userID") != null ){
 			userID = (String)session.getAttribute("userID");
 		}
-		
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber")!=null){
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		//spring MVC패턴으로 치면  ,@RequestParam("bbsNum")int bbsNum 이랑 같은 것 URL에 추가적인 데이터 전송
+		int bbsNum = 0;
+		if(request.getParameter("bbsNum") != null){
+			bbsNum = Integer.parseInt(request.getParameter("bbsNum"));
 		}
+		if(bbsNum == 0){
+			PrintWriter script = response.getWriter();
+			script.println("<script>"); //유동적으로 실행
+			script.println("alert('유효하지 않은 글입니다.')");
+			script.println("location.href='bbs.jsp'"); //main.jsp요청
+			script.println("</script>");
+		}
+		//반드시 존재 시 가능 , 받아온 글 담기
+		bbs bbs = new bbsDAO().getbbs(bbsNum);
 	 %>
 	<!-- 네비게이션 -->
 	<!-- 하나의 웹의 전반적 구성 식별 -->
@@ -91,50 +99,46 @@
 	<!-- 게시판 화면 설정 table구조-->
 	<div class="container">
 		<div class="row">
-		<!-- table-striped: 홀칸,짝칸 별로 색 차이주기 -->
-			<table class="table table-striped"
-				   style="text-align: center; border: 1px solid #dddddd">
-					<thead>
-						<tr>
-							<th style="background-color: #eeeeee; text-align: center;">번호</th>
-							<th style="background-color: #eeeeee; text-align: center;">제목</th>
-							<th style="background-color: #eeeeee; text-align: center;">작성일</th>
-							<th style="background-color: #eeeeee; text-align: center;">작성자</th>
-						</tr>
-					</thead>
-					<tbody>
-						<%
-							bbsDAO bbsDAO = new bbsDAO();
-							ArrayList<bbs> list = bbsDAO.getList(pageNumber);
-							for(int i=0;i<list.size();i++){
-						%>
-						<tr>
-							<td><%= list.get(i).getBbsNum()%></td>
-							<td><a href ="view.jsp?bbsNum=<%=list.get(i).getBbsNum()%>"><%= list.get(i).getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")%></a></td>
-							<td><%= list.get(i).getBbsDate().substring(0,11) +list.get(i).getBbsDate().substring(11,13)+"시"+list.get(i).getBbsDate().substring(14,16)+"분" %></td>
-							<td><%= list.get(i).getBbsUserID()%></td>
-						</tr>						
-						<%
-							}
-						%>
+			<!-- table-striped: 홀칸,짝칸 별로 색 차이주기 -->
+			<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
+				<thead>						
+					<tr>
+						<th colspan="3" style="background-color: #eeeeee; text-align: center;">게시판 글 보기</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr>
+						<td style="width: 20%;">글제목</td>
+						<td colspan="2"><%= bbs.getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")%></td>
+					</tr>
+					<tr>
+						<td >작성자</td>
+						<td colspan="2"><%=bbs.getBbsUserID()%></td>
+					</tr>
+					<tr>
+						<td >작성일</td>
+						<td colspan="2"><%= bbs.getBbsDate().substring(0,11) + bbs.getBbsDate().substring(11,13)+"시"+bbs.getBbsDate().substring(14,16)+"분" %></td>
+					</tr>
+					<tr>
+						<td >내용</td>
+						<td colspan="2" style="min-height: 200px; text-align: left;">
+						<!-- 특수문자 처리로 xxc공격을 막을 수 있음 -->
+						<%=bbs.getBbsContent().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")%></td>
+					</tr>
 
-					</tbody>
+				</tbody>
 			</table>
+			<!-- 목록이동 -->
+			<a href="bbs.jsp" class="btn btn-primary">목록</a>
 			<%
-				if(pageNumber != 1){
+				if(userID != null && userID.equals(bbs.getBbsUserID())){
 			%>
-				<a href = "bbs.jsp?pageNumber=<%=pageNumber - 1 %>" class ="btn btn-success btn-arraw-left">이전</a>
-			<%
-				}
-			if(bbsDAO.nextPage(pageNumber+1)){
-			%>
-			<!-- 다음 페이지 -->
-				<a href = "bbs.jsp?pageNumber=<%=pageNumber + 1 %>" class ="btn btn-success btn-arraw-left">다음</a>
+			<a href ="update.jsp?bbsNum=<%=bbsNum%>" class="btn btn-primary">수정</a>
+			<a onclick="return confirm('정말로 삭제하십겠습니까?')" href = "deleteAction.jsp?bbsNum=<%=bbsNum%>" class="btn btn-primary">삭제</a>
 			<%
 				}
 			%>
-
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
 		</div>
 	</div>
 	<!-- 애니메이션 담당 -->
