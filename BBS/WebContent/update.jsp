@@ -55,9 +55,8 @@
 	<!-- 네비게이션 -->
 	<!-- 하나의 웹의 전반적 구성 식별 -->
 	<nav class="navbar navbar-default">
-		<div calss="navbar-header">
-			<button type="button" class="navbar-toggle collapsed"
-				data-toggle="collapse"
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
 				data-target = "#bs-example-navbar-collapse-1"
 				aria-expanded="false">
 				<span class="icon-bar"></span>
@@ -68,13 +67,12 @@
 			<a class="navbar-brand" href="main.jsp">JSP 게시판웹사이트</a>
 		</div>
 		<!--  -->
-		<div class="collapse navbar-collapse" id="bs-example=navbar-collapse-1">
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<!-- active: 현제 접속한 페이지이다를 알림-->
-				<li ><a href="main.jsp">메인</a></li>
-				<li class="active"><a href="bbs.jsp">게시판</a></li>
+				<li class="active"><a href="main.jsp">메인</a></li>
+				<li><a href="bbs.jsp">게시판</a></li>
 			</ul>
-
 			<ul class="nav navbar-nav navbar-right">
 				<li class = "dropdown">
 					<a href="#" class="dropdown-toggle"
